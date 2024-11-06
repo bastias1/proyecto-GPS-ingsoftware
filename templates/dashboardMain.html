@@ -10,6 +10,8 @@
 			integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
 			crossorigin="anonymous" />
 		<link rel="stylesheet" href="/static/styles/dashboard.css" />
+		<!-- Leaflet CSS -->
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
 	</head>
 	<body>
 		<header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
@@ -64,6 +66,7 @@
 						<h1 class="h2">Ubicacion Flota en Tiempo Real</h1>
 					</div>
 					<!-- EDITAR AQUI-->
+					<div id="map" style="height: 600px;"></div>
 					<!--FIN EDITAR-->
 				</main>
 			</div>
@@ -72,5 +75,20 @@
 			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 			integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 			crossorigin="anonymous"></script>
+		<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+		<script>
+			//config leaflet
+			var map = L.map('map').setView([-33.4489, -70.6693], 13); //esto hay que cambiarlo por variables que se actualicen
+
+			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				maxZoom: 18,
+				attribution: '© OpenStreetMap contributors'
+			}).addTo(map);
+
+			// Ejemplo marcador y wea
+			L.marker([-33.4489, -70.6693]).addTo(map)
+				.bindPopup('Colectivo en posición.')
+				.openPopup();
+		</script>
 	</body>
 </html>
