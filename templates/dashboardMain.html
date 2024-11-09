@@ -11,6 +11,7 @@
 			crossorigin="anonymous" />
 		<link rel="stylesheet" href="/static/styles/dashboard.css" />
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+		
 	</head>
 	<body>
 		<header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
@@ -77,17 +78,46 @@
 		<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 		<script>
 			//config leaflet
-			var map = L.map('map').setView([-33.4489, -70.6693], 13); //esto hay que cambiarlo por variables que se actualicen
+			var map = L.map('map').setView([-33.4489, -70.6693], 13); //Esta ubicacion es de lo que s emuestra al inicio
 
 			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 				maxZoom: 18,
 				attribution: '© OpenStreetMap contributors'
 			}).addTo(map);
 
-			// Ejemplo marcador y wea
+			// Ejemplo marcador y wea Aqui van las ubicaciones de los vehiculos!
 			L.marker([-33.4489, -70.6693]).addTo(map)
 				.bindPopup('Colectivo en posición.')
 				.openPopup();
-		</script>
+			
+            
+
+            // Iterar sobre GPS y Conductores
+           
+        </script>
+		{% for conductor in conductores %}
+    <h3>Conductor: {{ conductor.nombre }}</h3>
+    
+    {% if conductor.vehiculo_relacionado %}
+        <p>Vehículo: {{ conductor.vehiculo_relacionado.patente }} - Modelo: {{ conductor.vehiculo_relacionado.modelo }}</p>
+    {% else %}
+        <p>No hay vehículo asociado.</p>
+    {% endif %}
+	
+    {% if conductor.estado == 'Activo' %}
+        <script> L.marker([{{ conductor.gps.latitud }}, {{ conductor.gps.longitud }}]).addTo(map)
+		.bindPopup('Conductor: {{ conductor.nombre}} Patente: {{ conductor.vehiculo_relacionado.patente }} Modelo Vehículo: {{ conductor.vehiculo_relacionado.modelo }} Estado: {{ conductor.estado}}') </script>
+    {% else %}
+	<script>
+		
+		L.marker([{{ conductor.gps.latitud }}, {{ conductor.gps.longitud }}], {icon: grayMarker}).addTo(map)
+		.bindPopup('Conductor: {{ conductor.nombre}} Patente: {{ conductor.vehiculo_relacionado.patente }} Modelo Vehículo: {{ conductor.vehiculo_relacionado.modelo }} Estado: {{ conductor.estado}}')
+	</script>
+        <p>Conductor Inactivo</p>
+    {% endif %}
+	{% endfor %}
+		
+
+
 	</body>
 </html>
