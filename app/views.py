@@ -124,3 +124,54 @@ def eliminarUsuario(request,id):
     usuario.delete()
     print("Usuario Eliminado")
     return redirect('usuarios')
+
+
+
+#GESTIONAR VEHICULOS
+
+def gestionVehiculos(request):
+    vehiculos = Vehiculo.objects.all()
+    
+    data = {
+        'vehiculos':vehiculos
+    }
+    return render(request, 'gestionVehiculos.html',data)
+
+
+def crearVehiculo(request):
+    if request.method == 'POST':
+        form = forms.registroVehiculo(request.POST)
+        print("Form insertado")
+        if form.is_valid():
+            print("Datos ingresados correctamente")
+            form.save()
+            return redirect('/vehiculos')
+    else:
+        form = forms.registroVehiculo()
+
+    data = {'form': form}
+    return render(request, 'crearVehiculo.html', data)
+
+
+def eliminarVehiculo(request, id):
+    try:
+        vehiculo = Vehiculo.objects.get(id=id)
+        vehiculo.delete()
+    except Vehiculo.DoesNotExist:
+        pass
+    return redirect('/vehiculos')
+
+def modificarVehiculo(request, id):
+    vehiculo = Vehiculo.objects.get(id=id)  # Obtener el vehículo
+
+    # Si el formulario es enviado (POST)
+    if request.method == 'POST':
+        form = forms.registroVehiculo(request.POST, instance=vehiculo)  # Usamos el formulario con la instancia
+        if form.is_valid():
+            form.save()  # Guardamos los cambios en la base de datos
+            return redirect('/vehiculos')  # Redirigimos después de guardar
+    else:
+        form = forms.registroVehiculo(instance=vehiculo)  # Para GET, solo pasamos la instancia
+
+    data = {'form': form}
+    return render(request, 'crearVehiculo.html', data)

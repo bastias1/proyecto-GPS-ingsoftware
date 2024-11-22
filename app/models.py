@@ -12,6 +12,9 @@ class Vehiculo(models.Model):
     def __str__(self):
         return f"{self.patente} - {self.modelo} ({self.anno})"
 
+
+
+
 # Modelo GPS
 class GPS(models.Model):
     latitud = models.FloatField()

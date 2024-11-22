@@ -13,16 +13,16 @@
 			integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 			crossorigin="anonymous"></script>
 		{% load static %}
-		<title>{% block title %} Pagina de Administrador {% endblock %}</title>
+		<title>{% block title %} Página de Administrador {% endblock %}</title>
 		<link rel="stylesheet" href="/static/styles/dashboard.css" />
 	</head>
 
 	<body>
 		<header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-			<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Flota de Vehiculos</a>
+			<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Flota de Vehículos</a>
 
 			<div id="navbarSearch" class="navbar-search w-100 collapse">
-				<input class="form-control w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search" />
+				<input class="form-control w-100 rounded-0 border-0" type="text" placeholder="Buscar" aria-label="Search" />
 			</div>
 		</header>
 
@@ -31,7 +31,7 @@
 				<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
 					<div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
 						<div class="offcanvas-header">
-							<h5 class="offcanvas-title" id="sidebarMenuLabel">Company name</h5>
+							<h5 class="offcanvas-title" id="sidebarMenuLabel">Flota de Vehículos</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
 						</div>
 						<div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
@@ -45,7 +45,13 @@
 								<li class="nav-item">
 									<a class="nav-link d-flex align-items-center gap-2" href="/usuarios">
 										<svg class="bi"><use xlink:href="#cart"></use></svg>
-										Gestion de Usuarios
+										Gestión de Usuarios
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link d-flex align-items-center gap-2" href="/vehiculos">
+										<svg class="bi"><use xlink:href="#car-front"></use></svg>
+										Gestión de Vehículos
 									</a>
 								</li>
 							</ul>
@@ -53,15 +59,7 @@
 
 							<ul class="nav flex-column mb-auto">
 								<li class="nav-item">
-									<a class="nav-link d-flex align-items-center gap-2" href="#">
-										<svg class="bi">
-											<use xlink:href="#gear-wide-connected"></use>
-										</svg>
-										Settings
-									</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link d-flex align-items-center gap-2" href="{% url 'logout' %}">Cerrar Sesion</a>
+									<a class="nav-link d-flex align-items-center gap-2" href="{% url 'logout' %}">Cerrar Sesión</a>
 								</li>
 							</ul>
 						</div>

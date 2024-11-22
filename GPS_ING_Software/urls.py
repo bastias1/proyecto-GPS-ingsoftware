@@ -37,4 +37,13 @@ urlpatterns = [
     path('crearUsuario/',views.creacionUsuario,name='creacionUsuario'),
     path('modificarUsuario/<int:id>/',views.modificarUsuario,name='modificarUsuario'),
     path('eliminarUsuario/<int:id>/',views.eliminarUsuario,name='eliminarUsuario'),
+    
+
+
+
+    # Vehiculos
+    path('vehiculos/', views.gestionVehiculos, name='vehiculos'),
+    path('crearVehiculo/', views.crearVehiculo, name='crearVehiculo'),
+    path('modificarVehiculo/<int:id>/', views.modificarVehiculo, name='modificarVehiculo'),  # Ruta para modificar
+    path('eliminarVehiculo/<int:id>/', views.eliminarVehiculo, name='eliminarVehiculo'),
 ]
