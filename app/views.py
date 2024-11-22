@@ -46,7 +46,7 @@ def mapa(request):
 
 #Empleados
 def gestionUsuarios(request):
-    usuarios = Usuario.objects.all()
+    usuarios = Usuario.objects.filter(conductor_relacionado__isnull=True)
     
     data = {
         'usuarios':usuarios
@@ -64,6 +64,7 @@ def creacionUsuario(request):
             user.set_password(form_user.cleaned_data['password'])
             user.save()
             usuario = form_usuario.save(commit=False)
+            usuario.tipo_usuario = 'Administrador'
             usuario.user = user
             usuario.save()
             return redirect('usuarios')  # Redirigir a la URL raíz
@@ -117,7 +118,7 @@ def modificarUsuario(request,id):
     return render(request, 'crearUsuarios.html', data)
 
 def eliminarUsuario(request,id):
-    if User.objects.count() == 1:
+    if User.objects.count() <= 1:
         messages.success(request,("No se puede eliminar el último usuario"))
         return redirect('usuarios')
     usuario = Usuario.objects.get(id=id)
@@ -175,3 +176,58 @@ def modificarVehiculo(request, id):
 
     data = {'form': form}
     return render(request, 'crearVehiculo.html', data)
+
+
+#Gestionar Conductores
+
+def gestionConductores(request):
+    usuarios = Usuario.objects.filter(conductor_relacionado__isnull=False)
+
+    data = {
+        'usuarios':usuarios
+    }
+    return render(request,'gestionConductores.html',data)
+
+def crearConductor(request):
+    if request.method=='POST':
+        form_user = forms.registroUser(request.POST)
+        form_usuario = forms.registroUsuario(request.POST)
+        form_conductor = forms.registroConductor(request.POST)
+        print("Form Insertado")
+        if form_usuario.is_valid() and form_user.is_valid() and form_conductor.is_valid():
+            print("Datos insertados a la base de datos")
+            conductor = form_conductor.save()
+            user = form_user.save(commit=False)
+            user.set_password(form_user.cleaned_data['password'])
+            user.save()
+            usuario = form_usuario.save(commit=False)
+            usuario.tipo_usuario = 'Conductor'
+            usuario.conductor_relacionado = conductor
+            usuario.user = user
+            usuario.save()
+            return redirect('conductores')  # Redirigir a la URL raíz
+        else:
+            print("Errores en los formularios")
+    else:
+        print("Datos NO insertados")
+        form_user = forms.registroUser()
+        form_usuario = forms.registroUsuario()
+        form_conductor = forms.registroConductor(request.POST)
+    
+    data = {
+        'form_usuario':form_usuario,
+        'form_user':form_user,
+        'form_conductor':form_conductor,
+    }
+
+    return render(request,'crearConductor.html',data)
+
+
+def modificarConductor(request,id):
+    pass
+
+def eliminarConductor(request,id):
+    usuario = Usuario.objects.get(id=id)
+    usuario.deleteConductor()
+    print("Usuario Eliminado")
+    return redirect('conductores')

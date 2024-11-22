@@ -12,9 +12,6 @@ class Vehiculo(models.Model):
     def __str__(self):
         return f"{self.patente} - {self.modelo} ({self.anno})"
 
-
-
-
 # Modelo GPS
 class GPS(models.Model):
     latitud = models.FloatField()
@@ -50,7 +47,7 @@ class Usuario(models.Model):
     rut = models.CharField(max_length=10,unique=True)
     telefono = models.BigIntegerField()
     tipo_usuario = models.CharField(max_length=50, choices=TIPO_USUARIO)
-    conductor_relacionado = models.ForeignKey(Conductor, on_delete=models.CASCADE, null=True, blank=True)
+    conductor_relacionado = models.OneToOneField(Conductor, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"{self.apellido}, {self.correo}"
@@ -59,3 +56,10 @@ class Usuario(models.Model):
         user = self.user
         super().delete(*args, **kwargs)
         user.delete()
+
+    def deleteConductor(self, *args, **kwargs):
+        user = self.user
+        conductor = self.conductor_relacionado
+        super().delete(*args, **kwargs)
+        user.delete()
+        conductor.delete()

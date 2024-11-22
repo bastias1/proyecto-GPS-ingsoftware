@@ -31,19 +31,21 @@ urlpatterns = [
     #menus
     path('mapa/',views.mapa,name = 'mapa'),
 
-
     #Empleados
     path('usuarios/',views.gestionUsuarios,name='usuarios'),
     path('crearUsuario/',views.creacionUsuario,name='creacionUsuario'),
     path('modificarUsuario/<int:id>/',views.modificarUsuario,name='modificarUsuario'),
     path('eliminarUsuario/<int:id>/',views.eliminarUsuario,name='eliminarUsuario'),
     
-
-
-
     # Vehiculos
     path('vehiculos/', views.gestionVehiculos, name='vehiculos'),
     path('crearVehiculo/', views.crearVehiculo, name='crearVehiculo'),
     path('modificarVehiculo/<int:id>/', views.modificarVehiculo, name='modificarVehiculo'),  # Ruta para modificar
     path('eliminarVehiculo/<int:id>/', views.eliminarVehiculo, name='eliminarVehiculo'),
+
+    #Conductores
+    path('conductores/',views.gestionConductores,name='conductores'),
+    path('crearConductor/',views.crearConductor,name='creacionConductor'),
+    path('modificarConductor/<int:id>/',views.modificarConductor,name='modificarConductor'),
+    path('eliminarConductor/<int:id>/',views.eliminarConductor,name='eliminarConductor'),
 ]
