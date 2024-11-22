@@ -1,0 +1,63 @@
+{% extends 'dashboard.html' %} {% load static %} {% block title %} Gestion de Usuarios {% endblock %} {% block content %}
+<div class="container px-4 py-5" id="featured-3">
+	<div class="d-flex justify-content-between align-items-center pb-2 border-bottom">
+		<h2 class="m-0">Lista de Usuarios</h2>
+		<a href="{% url 'creacionUsuario' %}" class="btn btn-success">Agregar nuevo Usuario</a>
+	</div>
+	{% if messages %} {% for message in messages %}
+	<div class="alert alert-danger">{{message}}</div>
+	{% endfor %} {% endif %} {% if usuarios %}
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>Nombre</th>
+				<th>Telefono</th>
+				<th>Acciones</th>
+			</tr>
+		</thead>
+		<tbody class="table-group-divider">
+			{% for usuario in usuarios %}
+			<tr>
+				<td>{{ usuario.user.first_name }} {{ usuario.user.last_name }}</td>
+				<td>{{ usuario.telefono }}</td>
+				<td>
+					<a href="{% url 'modificarUsuario' usuario.id %}" class="btn btn-warning btn-sm me-2 btn-modificar">Modificar</a>
+					<a href="{% url 'eliminarUsuario' usuario.id %}" class="btn btn-danger btn-sm btn-eliminar">Eliminar</a>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="5">
+					<div class="row p-3 border rounded">
+						<div class="col-4">
+							{{ usuario.user.first_name }} {{ usuario.user.last_name }}
+							<br />
+							<strong>RUT:</strong>
+							{{ usuario.rut }}
+							<br />
+							<strong>Correo:</strong>
+							{{ usuario.user.email }}
+						</div>
+						<div class="col-4">
+							<strong>Teléfono:</strong>
+							{{ usuario.telefono }}
+							<br />
+							<strong>Usuario:</strong>
+							{{ usuario.user.username }}
+							<br />
+							<strong>Fecha de Contratacion:</strong>
+							{{ usuario.user.date_joined }}
+							<br />
+							<strong>Tipo de Usuario:</strong>
+							{{ usuario.tipo_usuario }}
+						</div>
+					</div>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	{% else %}
+	<h2>No Existen Empleados</h2>
+	{% endif %} {% endblock %}
+</div>

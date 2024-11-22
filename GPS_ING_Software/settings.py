@@ -78,9 +78,11 @@ WSGI_APPLICATION = 'GPS_ING_Software.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'GPS_BD',
-        'USER': 'root',
-        'PASSWORD': '',
+        'NAME': 'flota_vehiculos_bd',
+        'USER': 'cafadmin',
+        'PASSWORD': 'wrtb4FbKhthj',
+        'HOST':'cleanandfresh-db.c74y2ico63pc.sa-east-1.rds.amazonaws.com',
+        'PORT':3306
     }
 }
 
