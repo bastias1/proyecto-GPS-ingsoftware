@@ -31,6 +31,7 @@ urlpatterns = [
     #menus
     path('mapa/',views.mapa,name = 'mapa'),
 
+
     #Empleados
     path('usuarios/',views.gestionUsuarios,name='usuarios'),
     path('crearUsuario/',views.creacionUsuario,name='creacionUsuario'),
