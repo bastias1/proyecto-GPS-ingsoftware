@@ -33,7 +33,7 @@
                 </td>
             </tr>
 
-            <!-- Modal for Detailed Info -->
+            <!-- Info Modal -->
             <div 
                 class="modal fade" 
                 id="detailsModal{{ usuario.id }}" 
@@ -69,24 +69,20 @@
                                 </div>
                             </div>
                             <hr>
-                            <h6>Vehículo Relacionado</h6>
-                            {% if usuario.conductor_relacionado.vehiculo_relacionado %}
+                            <h6>Vehículos Relacionados</h6>
+                            {% if usuario.vehiculos.all %}
                             <ul>
+                                {% for vehiculo in usuario.vehiculos.all %}
                                 <li>
-                                    <strong>Patente:</strong> {{ usuario.conductor_relacionado.vehiculo_relacionado.patente }}
+                                    <strong>Patente:</strong> {{ vehiculo.patente }}<br>
+                                    <strong>Marca:</strong> {{ vehiculo.marca }}<br>
+                                    <strong>Modelo:</strong> {{ vehiculo.modelo }}<br>
+                                    <strong>Año:</strong> {{ vehiculo.anno }}
                                 </li>
-                                <li>
-                                    <strong>Marca:</strong> {{ usuario.conductor_relacionado.vehiculo_relacionado.marca }}
-                                </li>
-                                <li>
-                                    <strong>Modelo:</strong> {{ usuario.conductor_relacionado.vehiculo_relacionado.modelo }}
-                                </li>
-                                <li>
-                                    <strong>Año:</strong> {{ usuario.conductor_relacionado.vehiculo_relacionado.anno }}
-                                </li>
+                                {% endfor %}
                             </ul>
                             {% else %}
-                            <p>Este conductor no tiene un vehículo asignado.</p>
+                            <p>Este conductor no tiene vehículos asignados.</p>
                             {% endif %}
                         </div>
                         <div class="modal-footer">

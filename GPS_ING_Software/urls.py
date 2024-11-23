@@ -34,37 +34,26 @@ urlpatterns = [
     # Menús
     path('mapa/', views.mapa, name='mapa'),
 
-<<<<<<< HEAD
     # Empleados
     path('usuarios/', views.gestionUsuarios, name='usuarios'),
     path('crearUsuario/', views.creacionUsuario, name='creacionUsuario'),
     path('modificarUsuario/<int:id>/', views.modificarUsuario, name='modificarUsuario'),
     path('eliminarUsuario/<int:id>/', views.eliminarUsuario, name='eliminarUsuario'),
 
-    # Vehículos
-=======
-    #Empleados
-    path('usuarios/',views.gestionUsuarios,name='usuarios'),
-    path('crearUsuario/',views.creacionUsuario,name='creacionUsuario'),
-    path('modificarUsuario/<int:id>/',views.modificarUsuario,name='modificarUsuario'),
-    path('eliminarUsuario/<int:id>/',views.eliminarUsuario,name='eliminarUsuario'),
-    
-    # Vehiculos
->>>>>>> d6c235fb62856b7865bfecf5a0e0f5ffd2457f70
-    path('vehiculos/', views.gestionVehiculos, name='vehiculos'),
-    path('crearVehiculo/', views.crearVehiculo, name='crearVehiculo'),
-    path('modificarVehiculo/<int:id>/', views.modificarVehiculo, name='modificarVehiculo'),
-    path('eliminarVehiculo/<int:id>/', views.eliminarVehiculo, name='eliminarVehiculo'),
 
-<<<<<<< HEAD
-    # GPS Data
-    path('api/owntracks/', views.receive_owntracks_data, name='owntracks'),  # Principal endpoint para OwnTracks
-    path('api/gps-data/', views.api_gps_data, name='api_gps_data'),  # Datos para el mapa
-=======
     #Conductores
     path('conductores/',views.gestionConductores,name='conductores'),
     path('crearConductor/',views.crearConductor,name='creacionConductor'),
     path('modificarConductor/<int:id>/',views.modificarConductor,name='modificarConductor'),
     path('eliminarConductor/<int:id>/',views.eliminarConductor,name='eliminarConductor'),
->>>>>>> d6c235fb62856b7865bfecf5a0e0f5ffd2457f70
+    
+    # Vehículos
+    path('vehiculos/', views.gestionVehiculos, name='vehiculos'),
+    path('crearVehiculo/', views.crearVehiculo, name='crearVehiculo'),
+    path('modificarVehiculo/<int:id>/', views.modificarVehiculo, name='modificarVehiculo'),
+    path('eliminarVehiculo/<int:id>/', views.eliminarVehiculo, name='eliminarVehiculo'),
+
+    # GPS Data
+    path('api/owntracks/', views.receive_owntracks_data, name='owntracks'),  # Principal endpoint para OwnTracks
+    path('api/gps-data/', views.api_gps_data, name='api_gps_data'),  # Datos para el mapa
 ]

@@ -34,7 +34,7 @@ def dashboard(request):
     return render(request, 'dashboard.html')
 
 def mapa(request):
-    conductores = Conductor.objects.all()  # Obtener todos los conductores
+    conductores = Usuario.objects.filter(tipo_usuario='Conductor')
     context = {'conductores': conductores}
     return render(request, 'mapa.html', context)
 
@@ -56,21 +56,13 @@ def api_gps_data(request):
     ]
     return JsonResponse(data, safe=False)
 
-
-
-# Endpoint para recibir datos GPS desde OwnTracks
-from django.views.decorators.csrf import csrf_exempt
-import json
-from django.http import JsonResponse
-from .models import GPSLog, Conductor, Vehiculo
-
 @csrf_exempt
 def receive_owntracks_data(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
             # Busca al conductor asociado (puedes usar username o identificador único del dispositivo)
-            conductor = Conductor.objects.get(vehiculo_relacionado__patente=data.get('tid'))
+            conductor = Usuario.objects.get(vehiculo_relacionado__patente=data.get('tid'))
             # Guarda la ubicación
             GPSLog.objects.create(
                 conductor=conductor,
@@ -78,18 +70,16 @@ def receive_owntracks_data(request):
                 longitud=data['lon'],
             )
             return JsonResponse({"status": "success"}, status=201)
-        except Conductor.DoesNotExist:
+        except Usuario.DoesNotExist:
             return JsonResponse({"error": "Conductor no encontrado"}, status=404)
         except KeyError:
             return JsonResponse({"error": "Datos inválidos"}, status=400)
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
 
-
-
 #Empleados
 def gestionUsuarios(request):
-    usuarios = Usuario.objects.filter(conductor_relacionado__isnull=True)
+    usuarios = Usuario.objects.filter(tipo_usuario='Administrador')
     
     data = {
         'usuarios':usuarios
@@ -185,9 +175,7 @@ def gestionVehiculos(request):
 def crearVehiculo(request):
     if request.method == 'POST':
         form = forms.registroVehiculo(request.POST)
-        print("Form insertado")
         if form.is_valid():
-            print("Datos ingresados correctamente")
             form.save()
             return redirect('/vehiculos')
     else:
@@ -224,28 +212,24 @@ def modificarVehiculo(request, id):
 #Gestionar Conductores
 
 def gestionConductores(request):
-    usuarios = Usuario.objects.filter(conductor_relacionado__isnull=False)
+    usuarios = Usuario.objects.filter(tipo_usuario='Conductor').prefetch_related('vehiculos')
 
     data = {
         'usuarios':usuarios
     }
+
     return render(request,'gestionConductores.html',data)
 
 def crearConductor(request):
     if request.method=='POST':
         form_user = forms.registroUser(request.POST)
         form_usuario = forms.registroUsuario(request.POST)
-        form_conductor = forms.registroConductor(request.POST)
-        print("Form Insertado")
-        if form_usuario.is_valid() and form_user.is_valid() and form_conductor.is_valid():
-            print("Datos insertados a la base de datos")
-            conductor = form_conductor.save()
+        if form_usuario.is_valid() and form_user.is_valid():
             user = form_user.save(commit=False)
             user.set_password(form_user.cleaned_data['password'])
             user.save()
             usuario = form_usuario.save(commit=False)
             usuario.tipo_usuario = 'Conductor'
-            usuario.conductor_relacionado = conductor
             usuario.user = user
             usuario.save()
             return redirect('conductores')  # Redirigir a la URL raíz
@@ -255,12 +239,10 @@ def crearConductor(request):
         print("Datos NO insertados")
         form_user = forms.registroUser()
         form_usuario = forms.registroUsuario()
-        form_conductor = forms.registroConductor(request.POST)
     
     data = {
         'form_usuario':form_usuario,
         'form_user':form_user,
-        'form_conductor':form_conductor,
     }
 
     return render(request,'crearConductor.html',data)
@@ -271,6 +253,5 @@ def modificarConductor(request,id):
 
 def eliminarConductor(request,id):
     usuario = Usuario.objects.get(id=id)
-    usuario.deleteConductor()
-    print("Usuario Eliminado")
+    usuario.delete()
     return redirect('conductores')

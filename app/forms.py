@@ -32,13 +32,14 @@ class registroUsuario(forms.ModelForm): #Registro Usuario/Empleado
 class registroVehiculo(forms.ModelForm):
     class Meta:
         model = Vehiculo
-        fields = ('patente', 'modelo', 'marca', 'anno')
+        fields = ('patente', 'modelo', 'marca', 'anno','conductor')
 
         widgets = {
             'patente' : forms.TextInput(attrs={'class':'form-control'}),
             'modelo' : forms.TextInput(attrs={'class':'form-control'}),
             'marca' : forms.TextInput(attrs={'class':'form-control'}),
             'anno' : forms.NumberInput(attrs={'class':'form-control'}),
+            'conductor':forms.Select(attrs={'class':'form-select'}),
         }
         
     def clean_patente(self):
@@ -47,16 +48,7 @@ class registroVehiculo(forms.ModelForm):
             raise forms.ValidationError('La patente debe tener 6 caracteres alfanuméricos en mayúsculas.')
         return patente
     
-class registroConductor(forms.ModelForm):
-    class Meta:
-        model = Conductor
-        fields = ('vehiculo_relacionado',)
-
-        widgets = {
-            'vehiculo_relacionado' : forms.Select(attrs={'class':'form-select'}),
-        }
-
 class crearGPS(forms.ModelForm):
     class Meta:
-        model = GPS
+        model = GPSLog
         fields = ('latitud','longitud')
