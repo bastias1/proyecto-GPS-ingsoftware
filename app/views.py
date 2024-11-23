@@ -62,7 +62,7 @@ def receive_owntracks_data(request):
         try:
             data = json.loads(request.body)
             # Busca al conductor asociado (puedes usar username o identificador único del dispositivo)
-            conductor = Usuario.objects.get(vehiculo_relacionado__patente=data.get('tid'))
+            conductor = Usuario.objects.get(id)
             # Guarda la ubicación
             GPSLog.objects.create(
                 conductor=conductor,
