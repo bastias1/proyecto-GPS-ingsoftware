@@ -52,7 +52,7 @@ class GPSLog(models.Model):
     conductor = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='gps_logs')
     latitud = models.FloatField()
     longitud = models.FloatField()
-    timestamp = models.DateTimeField(auto_now_add=True)  # Guarda automáticamente la fecha y hora de creación
+    timestamp = models.DateTimeField()  # Guarda automáticamente la fecha y hora de creación
 
     def __str__(self):
         return f"{self.conductor} - {self.latitud}, {self.longitud} @ {self.timestamp}"

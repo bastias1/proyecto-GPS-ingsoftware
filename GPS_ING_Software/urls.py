@@ -54,6 +54,6 @@ urlpatterns = [
     path('eliminarVehiculo/<int:id>/', views.eliminarVehiculo, name='eliminarVehiculo'),
 
     # GPS Data
-    path('api/owntracks/', views.receive_owntracks_data, name='owntracks'),  # Principal endpoint para OwnTracks
+    path('api/owntracks/', views.owntracks_webhook, name='owntracks_webhook'),  # Principal endpoint para OwnTracks
     path('api/gps-data/', views.api_gps_data, name='api_gps_data'),  # Datos para el mapa
 ]

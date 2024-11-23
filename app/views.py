@@ -5,6 +5,7 @@ from . import forms
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.timezone import now
 import json
 
 # Create your views here.
@@ -42,39 +43,68 @@ def mapa(request):
 # API para devolver datos GPS en formato JSON
 def api_gps_data(request):
     logs = GPSLog.objects.select_related('conductor').all()
-    print("Datos encontrados:", logs)  # Este mensaje aparecerá en la consola del servidor
-    data = [
-        {
-            "conductor": log.conductor.vehiculo_relacionado.patente if log.conductor.vehiculo_relacionado else "Sin Vehículo",
+    data = []
+    
+    for log in logs:
+        data.append({
+            "id": log.conductor.id if log.conductor else None,
             "latitud": log.latitud,
             "longitud": log.longitud,
-            "vehiculo": log.conductor.vehiculo_relacionado.modelo if log.conductor.vehiculo_relacionado else "No asignado",
-            "estado": log.conductor.estado,
+            "estado": log.conductor.estado if log.conductor else "Desconocido",
             "timestamp": log.timestamp.isoformat(),
-        }
-        for log in logs
-    ]
+        })
+    
     return JsonResponse(data, safe=False)
 
+
 @csrf_exempt
-def receive_owntracks_data(request):
+def owntracks_webhook(request):
     if request.method == "POST":
         try:
+            # Log raw request body for debugging
+            print("Raw Request Body:", request.body)
+
+            # Parse JSON data
             data = json.loads(request.body)
-            # Busca al conductor asociado (puedes usar username o identificador único del dispositivo)
-            conductor = Usuario.objects.get(id)
-            # Guarda la ubicación
+
+            # Log parsed data for debugging
+            print("Parsed Data:", data)
+
+            # Extract data (ensure it matches your payload)
+            user_id = data.get("user")
+            lat = data.get("lat")
+            lon = data.get("lon")
+
+            timestamp = data.get("tst")
+            if timestamp:
+                timestamp = now().fromtimestamp(timestamp)
+
+            # Find the corresponding Usuario by username
+            try:
+                usuario = Usuario.objects.get(user__username=user_id)
+            except Usuario.DoesNotExist:
+                return JsonResponse({"error": "User not found"}, status=404)
+
+            # Create a GPSLog entry
             GPSLog.objects.create(
-                conductor=conductor,
-                latitud=data['lat'],
-                longitud=data['lon'],
+                conductor=usuario,
+                latitud=lat,
+                longitud=lon,
+                timestamp=timestamp or now()
             )
-            return JsonResponse({"status": "success"}, status=201)
-        except Usuario.DoesNotExist:
-            return JsonResponse({"error": "Conductor no encontrado"}, status=404)
-        except KeyError:
-            return JsonResponse({"error": "Datos inválidos"}, status=400)
-    return JsonResponse({"error": "Método no permitido"}, status=405)
+
+            # Debugging logs
+            if not user_id:
+                return JsonResponse({"error": "Missing 'user' field"}, status=400)
+            if not lat or not lon:
+                return JsonResponse({"error": "Missing 'lat' or 'lon' field"}, status=400)
+
+            # Return success for testing
+            return JsonResponse({"status": "success"})
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+    return JsonResponse({"error": "Invalid method"}, status=405)
+
 
 
 #Empleados
