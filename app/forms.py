@@ -4,7 +4,7 @@ from app.models import *
 import datetime
 import re
 
-class registroUser(forms.ModelForm):
+class registroUser(forms.ModelForm): #Registro user para iniciar sesion
     class Meta:
         model = User
         fields = ('username','password','email','first_name','last_name')
@@ -17,17 +17,15 @@ class registroUser(forms.ModelForm):
             'last_name' : forms.TextInput(attrs={'class':'form-control'}),
         }
         
-class registroUsuario(forms.ModelForm):
+class registroUsuario(forms.ModelForm): #Registro Usuario/Empleado
     class Meta:
         model = Usuario 
-        fields = ('rut','telefono','tipo_usuario') 
+        fields = ('rut','telefono') 
 
         widgets = {
             'rut' : forms.TextInput(attrs={'class':'form-control'}),
             'telefono' : forms.NumberInput(attrs={'class':'form-control'}),
-            'tipo_usuario' : forms.Select(attrs={'class':'form-select'}),
         }
-
 
 
 ## Para registar vehiculo
@@ -42,8 +40,23 @@ class registroVehiculo(forms.ModelForm):
             'marca' : forms.TextInput(attrs={'class':'form-control'}),
             'anno' : forms.NumberInput(attrs={'class':'form-control'}),
         }
+        
     def clean_patente(self):
         patente = self.cleaned_data.get('patente')
         if not re.match(r'^[A-Z0-9]{6}$', patente):
             raise forms.ValidationError('La patente debe tener 6 caracteres alfanuméricos en mayúsculas.')
         return patente
+    
+class registroConductor(forms.ModelForm):
+    class Meta:
+        model = Conductor
+        fields = ('vehiculo_relacionado',)
+
+        widgets = {
+            'vehiculo_relacionado' : forms.Select(attrs={'class':'form-select'}),
+        }
+
+class crearGPS(forms.ModelForm):
+    class Meta:
+        model = GPS
+        fields = ('latitud','longitud')

@@ -43,15 +43,21 @@
 									</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link d-flex align-items-center gap-2" href="/usuarios">
+									<a class="nav-link d-flex align-items-center gap-2" href="{% url 'usuarios' %}">
 										<svg class="bi"><use xlink:href="#cart"></use></svg>
 										Gestión de Usuarios
 									</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link d-flex align-items-center gap-2" href="/vehiculos">
+									<a class="nav-link d-flex align-items-center gap-2" href="{% url 'vehiculos' %}">
 										<svg class="bi"><use xlink:href="#car-front"></use></svg>
 										Gestión de Vehículos
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link d-flex align-items-center gap-2" href="{% url 'conductores'%}">
+										<svg class="bi"><use xlink:href="#car-front"></use></svg>
+										Gestión de Conductores
 									</a>
 								</li>
 							</ul>
