@@ -1,0 +1,29 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+    {
+        "type": "Feature",
+        "geometry": {
+        "type": "Point",
+        "coordinates": [-70.6506, -33.4372]
+        },
+        "properties": {
+            "conductor": "Juan Pérez",
+            "vehiculo": "ABC123",
+            "timestamp": "2024-11-22T15:30:00Z"
+        }
+        },
+        {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-70.6565, -33.4445]
+        },
+        "properties": {
+            "conductor": "Maria López",
+            "vehiculo": "DEF456",
+            "timestamp": "2024-11-22T15:45:00Z"
+        }
+    }
+    ]
+}  

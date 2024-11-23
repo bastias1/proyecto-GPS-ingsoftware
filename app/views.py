@@ -1,9 +1,11 @@
 from django.shortcuts import render,redirect
-from django.http import Http404
+from django.http import Http404,JsonResponse
 from .models import *
 from . import forms 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 # Create your views here.
 def index(request):
@@ -33,15 +35,56 @@ def dashboard(request):
 
 def mapa(request):
     conductores = Conductor.objects.all()  # Obtener todos los conductores
-    gps = GPS.objects.all()  # Obtener todos los GPS (o filtrar según sea necesario)
-    vehiculos = Vehiculo.objects.all()  # Obtener todos los vehículos
-
-    context = {
-        'conductores': conductores,
-        'gps': gps,
-        'vehiculos': vehiculos,
-    }
+    context = {'conductores': conductores}
     return render(request, 'mapa.html', context)
+
+
+# API para devolver datos GPS en formato JSON
+def api_gps_data(request):
+    logs = GPSLog.objects.select_related('conductor').all()
+    print("Datos encontrados:", logs)  # Este mensaje aparecerá en la consola del servidor
+    data = [
+        {
+            "conductor": log.conductor.vehiculo_relacionado.patente if log.conductor.vehiculo_relacionado else "Sin Vehículo",
+            "latitud": log.latitud,
+            "longitud": log.longitud,
+            "vehiculo": log.conductor.vehiculo_relacionado.modelo if log.conductor.vehiculo_relacionado else "No asignado",
+            "estado": log.conductor.estado,
+            "timestamp": log.timestamp.isoformat(),
+        }
+        for log in logs
+    ]
+    return JsonResponse(data, safe=False)
+
+
+
+# Endpoint para recibir datos GPS desde OwnTracks
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.http import JsonResponse
+from .models import GPSLog, Conductor, Vehiculo
+
+@csrf_exempt
+def receive_owntracks_data(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            # Busca al conductor asociado (puedes usar username o identificador único del dispositivo)
+            conductor = Conductor.objects.get(vehiculo_relacionado__patente=data.get('tid'))
+            # Guarda la ubicación
+            GPSLog.objects.create(
+                conductor=conductor,
+                latitud=data['lat'],
+                longitud=data['lon'],
+            )
+            return JsonResponse({"status": "success"}, status=201)
+        except Conductor.DoesNotExist:
+            return JsonResponse({"error": "Conductor no encontrado"}, status=404)
+        except KeyError:
+            return JsonResponse({"error": "Datos inválidos"}, status=400)
+    return JsonResponse({"error": "Método no permitido"}, status=405)
+
+
 
 
 #Empleados

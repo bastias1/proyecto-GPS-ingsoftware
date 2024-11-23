@@ -1,0 +1,8 @@
+{
+    "host": "mqtt.tu-servidor.com",
+    "port": 1883,
+    "username": "usuario_conductor",
+    "password": "contrasena_conductor",
+    "clientId": "Conductor_123",
+    "tls": false
+}  

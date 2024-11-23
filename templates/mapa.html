@@ -1,49 +1,64 @@
-{% extends 'dashboard.html' %} {% load static %} {% block title %} Mapa en Tiempo Real {% endblock %} {% block content %}
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block title %} Mapa en Tiempo Real {% endblock %}
+
+{% block content %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 	<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-		<h1 class="h2">Ubicacion Flota en Tiempo Real</h1>
+		<h1 class="h2">Ubicación Flota en Tiempo Real</h1>
 	</div>
-	<!-- EDITAR AQUI-->
 	<div id="map" style="height: 600px"></div>
-	<!--FIN EDITAR-->
+	<div id="error-message" style="color: red; font-weight: bold; display: none;">
+	    Error al cargar datos GPS.
+	</div>
 </main>
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-	integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-	crossorigin="anonymous"></script>
+
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 <script>
-	//config leaflet
-	var map = L.map("map").setView([-33.4489, -70.6693], 13); //Esta ubicacion es de lo que s emuestra al inicio
+    var map = L.map("map").setView([-33.4489, -70.6693], 13);
 
-	L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-		maxZoom: 18,
-		attribution: "© OpenStreetMap contributors",
-	}).addTo(map);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 18,
+        attribution: "© OpenStreetMap contributors",
+    }).addTo(map);
 
-	// Ejemplo marcador y wea Aqui van las ubicaciones de los vehiculos!
-	L.marker([-33.4489, -70.6693]).addTo(map).bindPopup("Colectivo en posición.").openPopup();
+    var activeIcon = L.icon({
+        iconUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
+    });
 
-	// Iterar sobre GPS y Conductores
+    function refreshMarkers() {
+        fetch('/api/gps-data/')
+            .then(response => response.json())
+            .then(data => {
+                // Limpia los marcadores existentes
+                map.eachLayer(layer => {
+                    if (layer instanceof L.Marker) {
+                        map.removeLayer(layer);
+                    }
+                });
+
+                // Agrega nuevos marcadores
+                data.forEach(entry => {
+                    L.marker([entry.latitud, entry.longitud], { icon: activeIcon })
+                        .addTo(map)
+                        .bindPopup(`
+                            <b>Conductor:</b> ${entry.conductor}<br>
+                            <b>Vehículo:</b> ${entry.vehiculo}<br>
+                            <b>Hora:</b> ${entry.timestamp}<br>
+                            <b>Estado:</b> ${entry.estado}
+                        `);
+                });
+            })
+            .catch(err => console.error("Error refrescando datos GPS:", err));
+    }
+
+    // Refresca cada 5 segundos
+    setInterval(refreshMarkers, 5000);
 </script>
-{% for conductor in conductores %}
-<h3>Conductor: {{ conductor.nombre }}</h3>
 
-{% if conductor.vehiculo_relacionado %}
-<p>Vehículo: {{ conductor.vehiculo_relacionado.patente }} - Modelo: {{ conductor.vehiculo_relacionado.modelo }}</p>
-{% else %}
-<p>No hay vehículo asociado.</p>
-{% endif %} {% if conductor.estado == 'Activo' %}
-<script>
-	L.marker([{{ conductor.gps.latitud }}, {{ conductor.gps.longitud }}]).addTo(map)
-		.bindPopup('Conductor: {{ conductor.nombre}} Patente: {{ conductor.vehiculo_relacionado.patente }} Modelo Vehículo: {{ conductor.vehiculo_relacionado.modelo }} Estado: {{ conductor.estado}}')
-</script>
-{% else %}
-<script>
-
-	L.marker([{{ conductor.gps.latitud }}, {{ conductor.gps.longitud }}], {icon: grayMarker}).addTo(map)
-	.bindPopup('Conductor: {{ conductor.nombre}} Patente: {{ conductor.vehiculo_relacionado.patente }} Modelo Vehículo: {{ conductor.vehiculo_relacionado.modelo }} Estado: {{ conductor.estado}}')
-</script>
-<p>Conductor Inactivo</p>
-{% endif %} {% endfor %} {% endblock %}
+{% endblock %}

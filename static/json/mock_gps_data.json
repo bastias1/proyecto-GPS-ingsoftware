@@ -1,0 +1,14 @@
+[
+    {
+    "conductor": "Juan Pérez",
+    "latitud": -33.4372,
+    "longitud": -70.6506,
+    "timestamp": "2024-11-22T15:30:00Z"
+    },
+    {
+    "conductor": "Maria López",
+    "latitud": -33.4445,
+    "longitud": -70.6565,
+    "timestamp": "2024-11-22T15:45:00Z"
+    }
+]

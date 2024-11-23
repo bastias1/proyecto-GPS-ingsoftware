@@ -15,35 +15,38 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from app import views as views
 from app.views import *
 
 urlpatterns = [
+    # Admin
     path('admin/', admin.site.urls),
-    path('',views.index),
 
+    # Vistas principales
+    path('', views.index),
 
-    path('login/',views.inicioSesion,name='login'),
-    path('logout/',views.cerrarSesion,name='logout'),
-    path('dashboard/',views.dashboard,name = 'dashboard'),
+    # Sesión
+    path('login/', views.inicioSesion, name='login'),
+    path('logout/', views.cerrarSesion, name='logout'),
+    path('dashboard/', views.dashboard, name='dashboard'),
 
-    #menus
-    path('mapa/',views.mapa,name = 'mapa'),
+    # Menús
+    path('mapa/', views.mapa, name='mapa'),
 
+    # Empleados
+    path('usuarios/', views.gestionUsuarios, name='usuarios'),
+    path('crearUsuario/', views.creacionUsuario, name='creacionUsuario'),
+    path('modificarUsuario/<int:id>/', views.modificarUsuario, name='modificarUsuario'),
+    path('eliminarUsuario/<int:id>/', views.eliminarUsuario, name='eliminarUsuario'),
 
-    #Empleados
-    path('usuarios/',views.gestionUsuarios,name='usuarios'),
-    path('crearUsuario/',views.creacionUsuario,name='creacionUsuario'),
-    path('modificarUsuario/<int:id>/',views.modificarUsuario,name='modificarUsuario'),
-    path('eliminarUsuario/<int:id>/',views.eliminarUsuario,name='eliminarUsuario'),
-    
-
-
-
-    # Vehiculos
+    # Vehículos
     path('vehiculos/', views.gestionVehiculos, name='vehiculos'),
     path('crearVehiculo/', views.crearVehiculo, name='crearVehiculo'),
-    path('modificarVehiculo/<int:id>/', views.modificarVehiculo, name='modificarVehiculo'),  # Ruta para modificar
+    path('modificarVehiculo/<int:id>/', views.modificarVehiculo, name='modificarVehiculo'),
     path('eliminarVehiculo/<int:id>/', views.eliminarVehiculo, name='eliminarVehiculo'),
+
+    # GPS Data
+    path('api/owntracks/', views.receive_owntracks_data, name='owntracks'),  # Principal endpoint para OwnTracks
+    path('api/gps-data/', views.api_gps_data, name='api_gps_data'),  # Datos para el mapa
 ]
