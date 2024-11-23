@@ -279,7 +279,27 @@ def crearConductor(request):
 
 
 def modificarConductor(request,id):
-    pass
+    conductor = User.objects.get(id=id) # Obtener el vehículo
+    conductor1 = Usuario.objects.get(id=id)
+    
+
+    # Si el formulario es enviado (POST)
+    if request.method == 'POST':
+        form_user = forms.registroUser(request.POST, instance=conductor)  # Usamos el formulario con la instancia
+        form_usuario = forms.registroUsuario(request.POST, instance=conductor)
+        if form_user.is_valid() and form_usuario.is_valid():
+            form_user.save()
+            form_usuario.save()  # Guardamos los cambios en la base de datos
+            return redirect('conductores')  # Redirigimos después de guardar
+    else:
+        form_user = forms.registroUser(instance=conductor) 
+        form_usuario = forms.registroUsuario(instance=conductor1)   # Para GET, solo pasamos la instancia
+
+    data = {
+        'form_usuario':form_usuario,
+        'form_user':form_user,
+        }
+    return render(request, 'crearConductor.html', data)
 
 def eliminarConductor(request,id):
     usuario = Usuario.objects.get(id=id)
